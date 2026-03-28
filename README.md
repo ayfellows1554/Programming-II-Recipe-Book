@@ -39,23 +39,29 @@ TBD
 ## Features
 -Add, Delete, and Modify recipes
 -Change the number of servings (a manual button)
--
+-Search for existing recipes
+-Make your own collections of recipes
+-Categorize recipes
 
 ---
 
 ## OOP Concepts Used
 
 ### Encapsulation
-- Explain how data is protected using private members and public methods
+Recipe hides its internal ingredient list and exposes functions like editRecipeIngredients()
+Instructions manages its own steps internally and exposes addStep() or editStep().
 
 ### Inheritance
-- Describe any base and derived classes used
+TBD
 
 ### Polymorphism
-- Explain function overloading or virtual functions used
+TBD
 
 ### Composition
-- Describe “has-a” relationships between classes
+- List class Has-a to Recipe
+- Recipe class Has-a to Ingredient and Instructions
+- Ingredient class Has-a to Recipe
+- Instructions class Has-a to Recipe
 
 
 ---
@@ -64,8 +70,7 @@ TBD
 
 ### Member 1: Kris Fellows
 - Writing Classes
-- Responsibility 2
-
+- 
 ### Member 2: Gabriela Diaz Olivera
 - Code optimization
 - 
