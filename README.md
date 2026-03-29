@@ -101,8 +101,6 @@ All submitted work reflects our team’s understanding. Any external code has be
 - Modified as needed
 - Integrated by our team
 
-### UML Diagram
-
 
 
 
