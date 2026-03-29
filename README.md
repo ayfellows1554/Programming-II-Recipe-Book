@@ -41,27 +41,23 @@ TBD
 -Change the number of servings (a manual button)
 -Search for existing recipes
 -Make your own collections of recipes
--Categorize recipes
+-
 
 ---
 
 ## OOP Concepts Used
 
 ### Encapsulation
-Recipe hides its internal ingredient list and exposes functions like editRecipeIngredients()
-Instructions manages its own steps internally and exposes addStep() or editStep().
+- Explain how data is protected using private members and public methods
 
 ### Inheritance
-TBD
+- Describe any base and derived classes used
 
 ### Polymorphism
-TBD
+- Explain function overloading or virtual functions used
 
 ### Composition
-- List class Has-a to Recipe
-- Recipe class Has-a to Ingredient and Instructions
-- Ingredient class Has-a to Recipe
-- Instructions class Has-a to Recipe
+- Describe “has-a” relationships between classes
 
 
 ---
@@ -70,17 +66,18 @@ TBD
 
 ### Member 1: Kris Fellows
 - Writing Classes
-- 
+- GitHub Management/Organization
+
 ### Member 2: Gabriela Diaz Olivera
 - Code optimization
-- 
+- Input Validation
 
 ### Member 3: Camila Vaca
 - Writing Classes
 - Measurement Converter Popup
 
 ### Member 4: Grace Hilton
-Error Handling
+- Error Handling
 
 All members will contribute to GUI, bug-testing, and writing main code.
 
@@ -100,6 +97,11 @@ All submitted work reflects our team’s understanding. Any external code has be
 - Reviewed
 - Modified as needed
 - Integrated by our team
+
+### UML Diagram
+
+
+
 
 ---
 
