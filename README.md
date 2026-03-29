@@ -38,10 +38,13 @@ TBD
 
 ## Features
 -Add, Delete, and Modify recipes
+
 -Change the number of servings (a manual button)
+
 -Search for existing recipes
+
 -Make your own collections of recipes
--
+
 
 ---
 
