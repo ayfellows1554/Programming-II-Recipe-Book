@@ -15,7 +15,7 @@ static std::string trim(const std::string& s) {
     return s.substr(start, end - start);
 }
 
-Ingredient::Ingredient(const std::string& amt, const std::string& n) {
+Ingredient::Ingredient(double amountValue, const std::string& amt, const std::string& n) {
     std::string trimmedAmt = trim(amt);
     std::string trimmedName = trim(n);
 
@@ -25,11 +25,18 @@ Ingredient::Ingredient(const std::string& amt, const std::string& n) {
     if (trimmedName.empty()) {
         throw std::invalid_argument("Ingredient name cannot be empty.");
     }
-
     amount = trimmedAmt;
     name = trimmedName;
 }
+void Ingredient::scaleAmount(double ratio) {
+if (ratio <= 0) {
+        throw std::invalid_argument("Scale ratio must be greater than zero.");
+    }
+
+    m_amountValue *= ratio;
+
+}
 
 void Ingredient::displayIngredient() const {
-    std::cout << amount << " " << name << std::endl;
+    std::cout << amount << " " << m_name << std::endl;'
 }
