@@ -8,11 +8,11 @@
 
 class Instructions {	// Each Instructions obj belongs to its respective Recipe
 public:
-	// FIGURE OUT CONSTRUCTION!!!!
+	void addStep(const std::string& step);
+	void insertStep(int index, const std::string& step);
+	void removeStep(int index);
 
-	// Use vector index to find step -> manip it?
-	void addStep(int index) {};
-	void removeStep(int index) {};
+	const std::vecotr<std::string>& getSteps() const;
 
 private:
 	std::vector<std::string> steps{}; // vector of steps (which are strings)
