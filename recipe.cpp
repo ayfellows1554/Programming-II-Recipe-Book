@@ -74,21 +74,22 @@ void Recipe::scaleServings(int newServings) {
 }
 
 //Error Handling
-
-if (m_name.empty()) {
-    throw std::invalid_argument("Recipe must have a name.");
-}
-if (m_ingredients.empty()) {
-    throw std::invalid_argument("Recipe must have at least one ingredient.");
-}
-if (m_instructions.empty()) {
-    throw std::invalid_argument("Recipe must have at least one instruction.");
-}
-if (m_cookTimeMinutes < 0) {
-    throw std::invalid_argument("Cook time cannot be negative.");
-}
-if (m_servings <= 0) {
-    throw std::invalid_argument("Servings must be greater than zero.");
+void Recipe::validate() const {
+    if (m_name.empty()) {
+        throw std::invalid_argument("Recipe must have a name.");
+    }
+    if (m_ingredients.empty()) {
+        throw std::invalid_argument("Recipe must have at least one ingredient.");
+    }
+    if (m_instructions.empty()) {
+        throw std::invalid_argument("Recipe must have at least one instruction.");
+    }
+    if (m_cookTimeMinutes < 0) {
+        throw std::invalid_argument("Cook time cannot be negative.");
+    }
+    if (m_servings <= 0) {
+        throw std::invalid_argument("Servings must be greater than zero.");
+    }
 }
 
 
