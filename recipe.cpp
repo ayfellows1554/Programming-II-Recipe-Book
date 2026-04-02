@@ -1,6 +1,7 @@
 #include <format>
 #include <algorithm>
-#include <cctpye>
+#include <cctype>
+#include <stdexcept>
 #include "recipe.h"
 
 // ************ RECIPE ************
@@ -72,12 +73,31 @@ void Recipe::scaleServings(int newServings) {
     m_servings = newServings;
 }
 
-std::string Recipe::getRecipeName() { return m_name; }
+//Error Handling
 
+if (m_name.empty()) {
+    throw std::invalid_argument("Recipe must have a name.");
+}
+if (m_ingredients.empty()) {
+    throw std::invalid_argument("Recipe must have at least one ingredient.");
+}
+if (m_instructions.empty()) {
+    throw std::invalid_argument("Recipe must have at least one instruction.");
+}
+if (m_cookTimeMinutes < 0) {
+    throw std::invalid_argument("Cook time cannot be negative.");
+}
+if (m_servings <= 0) {
+    throw std::invalid_argument("Servings must be greater than zero.");
+}
+
+
+//Getters
+std::string Recipe::getRecipeName() { return m_name; }
 std::string Recipe::getRecipeCategory() { return m_category; }
 
 //Display for the recipe
 std::string Recipe::displayRecipe() {
-	return std::format("\"{}\"\nCategory: {}\nIngredients: \nInstructions: \n", getRecipeName(), getRecipeCategory(), getServings());
+	return std::format("\"{}\"\nCategory: {}\nServings: {}\nIngredients: \nInstructions: \n", getRecipeName(), getRecipeCategory(), getServings());
 }
 
