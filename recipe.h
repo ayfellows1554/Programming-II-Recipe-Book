@@ -18,12 +18,18 @@ public:
 
 	std::string displayRecipe();
 
+	void setServings(int servings);
+	int getServings() const;
+
+	void scaleServings(int newServings);
+
 
 private:
 	std::string m_name{};
 	std::string m_category{};
 	//std::vector<Ingredient> m_ingredients{}; // vector of Ingredient object
 	//std::vector<Instruction> m_instructions{}; // vector of Instruction object
-	// implement serving size somehow
+
+	int m_servings{1}; //defaults the serving size to 1
 
 };
