@@ -7,29 +7,46 @@
 // code by Camila
 class Recipe {
 public: 
-	Recipe(std::string name, std::string category);
+	
+//Constructor
+Recipe(std::string name, std::string category);
 	// ingredient and instruction classes added later
 	
-	void setRecipeName(std::string name);
-	std::string getRecipeName();
+//Name		
+void setRecipeName(std::string name);
+std::string getRecipeName();
 
-	void setRecipeCategory(std::string category);
-	std::string getRecipeCategory();
+//Category
+void setRecipeCategory(std::string category)	
+std::string getRecipeCategory();
 
-	std::string displayRecipe();
+//Display	
+std::string displayRecipe();
 
-	void setServings(int servings);
-	int getServings() const;
+//Serving Size	
+void setServings(int servings);	
+int getServings() const;
 
-	void scaleServings(int newServings);
+//Scales the servings
+void scaleServings(int newServings);
+
+//Validation (checks all fields)
+void validate() const;
 
 
 private:
+	//Basic Fields
 	std::string m_name{};
 	std::string m_category{};
-	//std::vector<Ingredient> m_ingredients{}; // vector of Ingredient object
-	//std::vector<Instruction> m_instructions{}; // vector of Instruction object
+	
+//std::vector<Ingredient> m_ingredients{}; // vector of Ingredient object	
+//std::vector<Instruction> m_instructions{}; // vector of Instruction object
 
-	int m_servings{1}; //defaults the serving size to 1
+//Defaults the serving size to 1	
+int m_servings{1} 
+
+//Cook Time default is 0
+int m_cookTimeMinutes{0};
+
 
 };
