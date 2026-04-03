@@ -12,7 +12,7 @@ public:
 	void insertStep(int index, const std::string& step);
 	void removeStep(int index);
 
-	const std::vecotr<std::string>& getSteps() const;
+	const std::vector<std::string>& getSteps() const;
 
 private:
 	std::vector<std::string> steps{}; // vector of steps (which are strings)
