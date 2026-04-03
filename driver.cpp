@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include "recipe.h"
 #include "list.h"
 
@@ -16,7 +17,7 @@ void searchRecipes() {
 void viewLists() {
     cout << "View Lists feature...\n";
 }
-// basic menu for now
+
 void showMenu() {
     cout << "\n****** Recipe Manager ******\n";
     cout << "1. Create Recipe\n";
@@ -31,25 +32,53 @@ int main() {
 
     do {
         showMenu();
-        cin >> choice;
-// makes sure space is ignored
-        cin.ignore(1000, '\n');
 
-        switch (choice) {
-            case 1:
-                createRecipe();
-                break;
-            case 2:
-                searchRecipes();
-                break;
-            case 3:
-                viewLists();
-                break;
-            case 0:
-                cout << "Thank you for using our Recipe Book!\n";
-                break;
-            default:
-                cout << "Invalid choice. Try again.\n";
+        cin >> choice;
+
+        // Handle any errors for letters, symbols, empty input, etc.
+        if (cin.fail()) {
+            cin.clear(); // reset fail state
+            cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a number.\n";
+            continue;
+        }
+
+        // Clear leftover newline
+        cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
+
+        try {
+            switch (choice) {
+                case 1:
+                    createRecipe();
+                    break;
+
+                case 2:
+                    searchRecipes();
+                    break;
+
+                case 3:
+                    viewLists();
+                    break;
+
+                case 0:
+                    cout << "Thank you for using our Recipe Book!\n";
+                    break;
+
+                default:
+                    cout << "Invalid choice. Try again.\n";
+            }
+        }
+        catch (const std::invalid_argument& e) {
+            cout << "Input Error: " << e.what() << "\n";
+        }
+        catch (const std::out_of_range& e) {
+            cout << "Range Error: " << e.what() << "\n";
+        }
+        catch (const std::runtime_error& e) {
+            cout << "Error: " << e.what() << "\n";
+        }
+        catch (const std::exception& e) {
+            cout << "Unexpected Error: " << e.what() << "\n";
         }
 
     } while (choice != 0);
