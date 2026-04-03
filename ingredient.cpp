@@ -4,7 +4,6 @@
 #include <cctype>
 #include "Ingredient.h"
 
-//This trims the strings so that there isn't anything left dangling
 static std::string trim(const std::string& s) {
     size_t start = 0;
     while (start < s.size() && std::isspace(static_cast<unsigned char>(s[start]))) ++start;
@@ -15,28 +14,42 @@ static std::string trim(const std::string& s) {
     return s.substr(start, end - start);
 }
 
-Ingredient::Ingredient(double amountValue, const std::string& amt, const std::string& n) {
-    std::string trimmedAmt = trim(amt);
+Ingredient::Ingredient(double amountValue, const std::string& unit, const std::string& n)
+{
+    std::string trimmedUnit = trim(unit);
     std::string trimmedName = trim(n);
 
-    if (trimmedAmt.empty()) {
-        throw std::invalid_argument("Ingredient amount cannot be empty.");
+    if (amountValue <= 0) {
+        throw std::invalid_argument("Ingredient amount must be greater than zero.");
     }
+
+    if (trimmedUnit.empty()) {
+        throw std::invalid_argument("Ingredient unit cannot be empty.");
+    }
+
+    // Unit cannot contain digits
+    for (char c : trimmedUnit) {
+        if (std::isdigit(static_cast<unsigned char>(c))) {
+            throw std::invalid_argument("Ingredient unit cannot contain numbers.");
+        }
+    }
+
     if (trimmedName.empty()) {
         throw std::invalid_argument("Ingredient name cannot be empty.");
     }
-    amount = trimmedAmt;
-    name = trimmedName;
+
+    m_amountValue = amountValue;
+    m_unit = trimmedUnit;
+    m_name = trimmedName;
 }
+
 void Ingredient::scaleAmount(double ratio) {
-if (ratio <= 0) {
+    if (ratio <= 0) {
         throw std::invalid_argument("Scale ratio must be greater than zero.");
     }
-
     m_amountValue *= ratio;
-
 }
 
 void Ingredient::displayIngredient() const {
-    std::cout << amount << " " << m_name << std::endl;'
+    std::cout << m_amountValue << " " << m_unit << " " << m_name << std::endl;
 }
