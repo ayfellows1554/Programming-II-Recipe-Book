@@ -17,7 +17,7 @@ void setRecipeName(std::string name);
 std::string getRecipeName();
 
 //Category
-void setRecipeCategory(std::string category)	
+void setRecipeCategory(std::string category);	
 std::string getRecipeCategory();
 
 //Display	
