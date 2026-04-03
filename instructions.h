@@ -1,19 +1,36 @@
 #pragma once
 #include <string>
-#include <string_view>
 #include <vector>
 
 // ************ INSTRUCTIONS ************
-// code by Camila
+// code by Camila & Grace
 
-class Instructions {	// Each Instructions obj belongs to its respective Recipe
+class Instructions {
 public:
-	void addStep(const std::string& step);
-	void insertStep(int index, const std::string& step);
-	void removeStep(int index);
+    // Add a new step at the end
+    void addStep(const std::string& step);
 
-	const std::vector<std::string>& getSteps() const;
+    // Insert a step at a specific index
+    void insertStep(int index, const std::string& step);
+
+    // Remove a step by index
+    void removeStep(int index);
+
+    // Edit an existing step
+    void editStep(int index, const std::string& newStep);
+
+    // Clear all steps
+    void clear();
+
+    // Get a single step
+    const std::string& getStep(int index) const;
+
+    // Get all steps
+    const std::vector<std::string>& getSteps() const;
+
+    // Check if there are no steps
+    bool empty() const;
 
 private:
-	std::vector<std::string> steps{}; // vector of steps (which are strings)
+    std::vector<std::string> steps; // vector of instruction steps
 };
