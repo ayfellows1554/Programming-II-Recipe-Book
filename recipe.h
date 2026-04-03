@@ -43,7 +43,7 @@ private:
 //std::vector<Instruction> m_instructions{}; // vector of Instruction object
 
 //Defaults the serving size to 1	
-int m_servings{1} 
+int m_servings{1}; 
 
 //Cook Time default is 0
 int m_cookTimeMinutes{0};
