@@ -5,47 +5,82 @@
 #include "recipe.h"
 
 // ************ RECIPE ************
-// code by Camila
+// code by Camila & Grace
 
-//This defines the trim() function, so the strings will automatically be trimmed before being saved
+// Trim helper
 static std::string trim(const std::string& s) {
     size_t start = 0;
-    while (start < s.size() && std::isspace(static_cast<unsigned char>(s[start]))) ++start;
+    while (start < s.size() && std::isspace(static_cast<unsigned char>(s[start]))) {
+        ++start;
+    }
 
     size_t end = s.size();
-    while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1]))) --end;
+    while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1]))) {
+        --end;
+    }
 
     return s.substr(start, end - start);
 }
 
-//Constructor
+// Validate name/category according to your rules
+static void validateStringField(const std::string& field, const std::string& fieldName) {
+    std::string trimmed = trim(field);
+
+    if (trimmed.empty()) {
+        throw std::invalid_argument(fieldName + " cannot be empty.");
+    }
+
+    // Reject punctuation-only
+    bool onlyPunct = true;
+    for (char c : trimmed) {
+        if (!std::ispunct(static_cast<unsigned char>(c))) {
+            onlyPunct = false;
+            break;
+        }
+    }
+    if (onlyPunct) {
+        throw std::invalid_argument(fieldName + " cannot contain only punctuation.");
+    }
+
+    // Reject control characters
+    for (char c : trimmed) {
+        if (std::iscntrl(static_cast<unsigned char>(c))) {
+            throw std::invalid_argument(fieldName + " contains invalid characters.");
+        }
+    }
+
+    // Reject overly long fields
+    if (trimmed.size() > 100) {
+        throw std::invalid_argument(fieldName + " is too long.");
+    }
+}
+
+// Constructor
 Recipe::Recipe(std::string name, std::string category) {
-	setRecipeName(name);
-	setRecipeCategory(category);
+    setRecipeName(name);
+    setRecipeCategory(category);
 }
 
 // Setters with validation
 void Recipe::setRecipeName(std::string name) {
-    name = trim(name);
-
-    if (name.empty()) {
-        throw std::invalid_argument("Recipe name cannot be empty.");
-    }
-
-    m_name = name;
+    validateStringField(name, "Recipe name");
+    m_name = trim(name);
 }
 
 void Recipe::setRecipeCategory(std::string category) {
-    category = trim(category);
-
-    if (category.empty()) {
-        throw std::invalid_argument("Recipe category cannot be empty.");
-    }
-
-    m_category = category;
+    validateStringField(category, "Recipe category");
+    m_category = trim(category);
 }
 
-//Serving Sizes 
+// Cook time setter
+void Recipe::setCookTime(int minutes) {
+    if (minutes < 0) {
+        throw std::invalid_argument("Cook time cannot be negative.");
+    }
+    m_cookTimeMinutes = minutes;
+}
+
+// Serving Sizes
 void Recipe::setServings(int servings) {
     if (servings <= 0) {
         throw std::invalid_argument("Servings must be greater than zero.");
@@ -57,7 +92,7 @@ int Recipe::getServings() const {
     return m_servings;
 }
 
-//Serving Size Scaling with the error inside
+// Serving Size Scaling
 void Recipe::scaleServings(int newServings) {
     if (newServings <= 0) {
         throw std::invalid_argument("New serving size must be greater than zero.");
@@ -65,18 +100,39 @@ void Recipe::scaleServings(int newServings) {
 
     double ratio = static_cast<double>(newServings) / m_servings;
 
-    // When you add ingredients later:
-    // for (auto& ingredient : m_ingredients) {
-    //     ingredient.scaleAmount(ratio);
-    // }
+    // Scale ingredients
+    for (auto& ingredient : m_ingredients) {
+        ingredient.scaleAmount(ratio);
+    }
 
     m_servings = newServings;
 }
 
-//Error Handling
+// Ingredient management
+void Recipe::addIngredient(const Ingredient& ing) {
+    m_ingredients.push_back(ing);
+}
+
+void Recipe::clearIngredients() {
+    m_ingredients.clear();
+}
+
+// Instruction management
+void Recipe::addInstruction(const std::string& step) {
+    m_instructions.addStep(step);
+}
+
+void Recipe::clearInstructions() {
+    m_instructions.clear();
+}
+
+// Validation for entire recipe
 void Recipe::validate() const {
     if (m_name.empty()) {
         throw std::invalid_argument("Recipe must have a name.");
+    }
+    if (m_category.empty()) {
+        throw std::invalid_argument("Recipe must have a category.");
     }
     if (m_ingredients.empty()) {
         throw std::invalid_argument("Recipe must have at least one ingredient.");
@@ -92,13 +148,31 @@ void Recipe::validate() const {
     }
 }
 
+// Getters
+const std::string& Recipe::getRecipeName() const { return m_name; }
+const std::string& Recipe::getRecipeCategory() const { return m_category; }
 
-//Getters
-std::string Recipe::getRecipeName() { return m_name; }
-std::string Recipe::getRecipeCategory() { return m_category; }
-
-//Display for the recipe
+// Display recipe
 std::string Recipe::displayRecipe() {
-	return std::format("\"{}\"\nCategory: {}\nServings: {}\nIngredients: \nInstructions: \n", getRecipeName(), getRecipeCategory(), getServings());
-}
+    std::string output = std::format(
+        "\"{}\"\nCategory: {}\nServings: {}\nCook Time: {} minutes\n\nIngredients:\n",
+        m_name, m_category, m_servings, m_cookTimeMinutes
+    );
 
+    for (const auto& ing : m_ingredients) {
+        output += std::format("  - {} {} {}\n",
+            ing.getAmountValue(),
+            ing.getUnit(),
+            ing.getName()
+        );
+    }
+
+    //Prints the instructions on a numbered list automatically
+	output += "\nInstructions:\n";
+    int stepNum = 1;
+    for (const auto& step : m_instructions.getSteps()) {
+        output += std::format("  {}. {}\n", stepNum++, step);
+    }
+
+    return output;
+}
