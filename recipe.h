@@ -1,52 +1,65 @@
 #pragma once
 #include <string>
-#include <string_view>
 #include <vector>
+#include "Ingredient.h"
+#include "instructions.h"
 
 // ************ RECIPE ************
-// code by Camila
+// code by Camila & Grace
+
 class Recipe {
-public: 
-	
-//Constructor
-Recipe(std::string name, std::string category);
-	// ingredient and instruction classes added later
-	
-//Name		
-void setRecipeName(std::string name);
-std::string getRecipeName();
+public:
+    // Constructor
+    Recipe(std::string name, std::string category);
 
-//Category
-void setRecipeCategory(std::string category);	
-std::string getRecipeCategory();
+    // Name
+    void setRecipeName(std::string name);
+    const std::string& getRecipeName() const;
 
-//Display	
-std::string displayRecipe();
+    // Category
+    void setRecipeCategory(std::string category);
+    const std::string& getRecipeCategory() const;
 
-//Serving Size	
-void setServings(int servings);	
-int getServings() const;
+    // Cook time
+    void setCookTime(int minutes);
+    int getCookTime() const { return m_cookTimeMinutes; }
 
-//Scales the servings
-void scaleServings(int newServings);
+    // Serving size
+    void setServings(int servings);
+    int getServings() const;
 
-//Validation (checks all fields)
-void validate() const;
+    // Scale servings
+    void scaleServings(int newServings);
 
+    // Ingredient management
+    void addIngredient(const Ingredient& ing);
+    void clearIngredients();
+    const std::vector<Ingredient>& getIngredients() const { return m_ingredients; }
+
+    // Instruction management
+    void addInstruction(const std::string& step);
+    void clearInstructions();
+    const Instructions& getInstructions() const { return m_instructions; }
+
+    // Validate entire recipe
+    void validate() const;
+
+    // Display
+    std::string displayRecipe();
 
 private:
-	//Basic Fields
-	std::string m_name{};
-	std::string m_category{};
-	
-//std::vector<Ingredient> m_ingredients{}; // vector of Ingredient object	
-//std::vector<Instruction> m_instructions{}; // vector of Instruction object
+    // Basic fields
+    std::string m_name;
+    std::string m_category;
 
-//Defaults the serving size to 1	
-int m_servings{1}; 
+    // Ingredients + instructions
+    std::vector<Ingredient> m_ingredients;
+    Instructions m_instructions;
 
-//Cook Time default is 0
-int m_cookTimeMinutes{0};
+    // Serving size (default 1)
+    int m_servings{1};
 
-
+    // Cook time (default 0)
+    int m_cookTimeMinutes{0};
 };
+
