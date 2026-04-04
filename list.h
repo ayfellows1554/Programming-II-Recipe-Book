@@ -31,4 +31,10 @@ public:
 
     // Display all recipes in the list
     void displayLists() const;
+
+     // Get a single recipe by index
+    const std::string& getRecipe(int index) const;
+
+    // Get the list name
+    const std::string& getListName() const { return name; }
 };
