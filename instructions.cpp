@@ -19,7 +19,7 @@ static std::string trim(const std::string& s) {
     return s.substr(start, end - start);
 }
 
-// Validate a step string according to all your rules
+// Validates string steps
 static void validateStep(const std::string& step) {
     std::string trimmed = trim(step);
 
