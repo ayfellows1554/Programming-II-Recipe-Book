@@ -22,7 +22,7 @@ static std::string trim(const std::string& s) {
     return s.substr(start, end - start);
 }
 
-// Validate name/category according to your rules
+// Validate name/categorys
 static void validateStringField(const std::string& field, const std::string& fieldName) {
     std::string trimmed = trim(field);
 
@@ -56,7 +56,9 @@ static void validateStringField(const std::string& field, const std::string& fie
 }
 
 // Constructor
-Recipe::Recipe(std::string name, std::string category) {
+Recipe::Recipe(std::string name, std::string category)
+    : m_cookTimeMinutes(0), m_servings(1)   // safe defaults
+{
     setRecipeName(name);
     setRecipeCategory(category);
 }
@@ -119,12 +121,16 @@ void Recipe::clearIngredients() {
 
 // Instruction management
 void Recipe::addInstruction(const std::string& step) {
+    if (trim(step).empty()) {
+        throw std::invalid_argument("Instruction step cannot be empty.");
+    }
     m_instructions.addStep(step);
 }
 
 void Recipe::clearInstructions() {
     m_instructions.clear();
 }
+
 
 // Validation for entire recipe
 void Recipe::validate() const {
@@ -153,7 +159,7 @@ const std::string& Recipe::getRecipeName() const { return m_name; }
 const std::string& Recipe::getRecipeCategory() const { return m_category; }
 
 // Display recipe
-std::string Recipe::displayRecipe() {
+std::string Recipe::displayRecipe() const{
     std::string output = std::format(
         "\"{}\"\nCategory: {}\nServings: {}\nCook Time: {} minutes\n\nIngredients:\n",
         m_name, m_category, m_servings, m_cookTimeMinutes
@@ -167,8 +173,7 @@ std::string Recipe::displayRecipe() {
         );
     }
 
-    //Prints the instructions on a numbered list automatically
-	output += "\nInstructions:\n";
+    output += "\nInstructions:\n";
     int stepNum = 1;
     for (const auto& step : m_instructions.getSteps()) {
         output += std::format("  {}. {}\n", stepNum++, step);
