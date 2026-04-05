@@ -4,6 +4,8 @@
 #include "list.h"
 #include "RecipeBook.h"
 #include "ListManager.h"
+#include "ingredient.h"
+#include "instructions.h"
 using namespace std;
 
 // Create a new recipe by prompting the user for details and adding it to the recipe book
