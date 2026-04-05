@@ -53,7 +53,7 @@ static void validateRecipeName(const std::string& name) {
 }
 
 List::List(const std::string& listName)
-    : name(trim(listName)) 
+    : name(trim(listName))
 {
     if (this->name.empty()) {
         throw std::invalid_argument("List name cannot be empty.");
