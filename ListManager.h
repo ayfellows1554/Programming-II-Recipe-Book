@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "List.h"
+#include "list.h"
 
 class ListManager {
 private:
