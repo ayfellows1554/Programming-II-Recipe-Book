@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <cctype>
-#include "Ingredient.h"
+#include "ingredient.h"
 #include <iostream>
 
 
