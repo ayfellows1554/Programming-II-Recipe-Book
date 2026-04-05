@@ -22,7 +22,7 @@ void ListManager::createList(const std::string& name) {
     std::string trimmed = trim(name);
 
     if (trimmed.empty()) {
-        std::cout << "List name cannot be empty.\n";
+        throw std::invalid_argument("List name cannot be empty.");
         return;
     }
 
