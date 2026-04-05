@@ -45,7 +45,7 @@ public:
     void validate() const;
 
     // Display
-    std::string displayRecipe();
+    std::string displayRecipe() const;
 
 private:
     // Basic fields
@@ -57,9 +57,8 @@ private:
     Instructions m_instructions;
 
     // Serving size (default 1)
-    int m_servings{1};
+    int m_servings{ 1 };
 
     // Cook time (default 0)
-    int m_cookTimeMinutes{0};
+    int m_cookTimeMinutes{ 0 };
 };
-
