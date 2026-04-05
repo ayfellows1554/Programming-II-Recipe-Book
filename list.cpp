@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <cctype>
-#include "List.h"
+#include "list.h"
 
 // Trim helper
 static std::string trim(const std::string& s) {
