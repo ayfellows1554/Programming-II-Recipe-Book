@@ -1,8 +1,9 @@
-#include <iostream>
 #include <stdexcept>
 #include <algorithm>
 #include <cctype>
 #include "Ingredient.h"
+#include <iostream>
+
 
 static std::string trim(const std::string& s) {
     size_t start = 0;
