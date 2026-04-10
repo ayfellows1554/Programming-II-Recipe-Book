@@ -51,13 +51,18 @@ TBD
 ## OOP Concepts Used
 
 ### Encapsulation
-- Explain how data is protected using private members and public methods
+Encapsulation occurs through the system by ensuring that each class owns and protects its data. The Recipe class stores its name, category, ingredients, and instructions as private members. This means that no outside code can change anything related to that class. The Instruction class keeps its (vector<string>step) private, but has addStep() and removeStep() public so the steps can be validated before being added. We also added a RecipeManager class and a ListManager class. The RecipeManager stores the data of the recipes, and only this class can add, delete, or retrieve those recipes. The ListManager works the same way with the lists and keeps that info private, but it has functions like createList() and deleteList() public, so the actual list data can not be altered from anything else.
 
 ### Inheritance
-- Describe any base and derived classes used
+We currently do not have any inheritance classes. But it would be something easy to do.
 
 ### Polymorphism
-- Explain function overloading or virtual functions used
+Overloading:
+First, we use overloading in places where multiple versions of a function share the same name but accept different parameters. For example, the Instruction class may include both addStep(const std::string&) and addStep(int index, const std::string&), allowing steps to be added either at the end or at a specific position. This is compile‑time polymorphism because the compiler decides which version to call based on the argument list. 
+
+Virtual Function:
+
+Second, our design supports runtime polymorphism through virtual functions. If the Recipe class declares virtual void displayRecipe() const, then any subclass—such as a future DessertRecipe or DinnerRecipe—can override that function with its own formatting. When a Recipe* pointer stored inside RecipeManager calls displayRecipe(), C++ will automatically invoke the correct overridden version based on the object’s actual type, not the pointer type. We currently do not have any subclasses yet, but the structure of displayIngredient(), displaySteps(), and displayRecipe() functions already follows the polymorphic pattern of “each object knows how to display itself.”
 
 ### Composition
 - Describe “has-a” relationships between classes
