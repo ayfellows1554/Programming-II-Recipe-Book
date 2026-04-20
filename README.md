@@ -15,7 +15,7 @@ A recipe book that allows users to browse and organize their favorite recipes.
 
 ### Requirements
 - C++ compiler like CLion, Visual Studios
-- GUI framework used (as applicable): TBD
+- GUI framework used is wxWidgetsApp.
 
 ### Steps
 1. Clone the repository:
