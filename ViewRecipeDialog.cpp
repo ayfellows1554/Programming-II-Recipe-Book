@@ -1,61 +1,110 @@
 #include "ViewRecipeDialog.h"
-#include "Theme.h"
 
-// Constructor
 ViewRecipeDialog::ViewRecipeDialog(wxWindow* parent, const Recipe& recipe)
-    : wxDialog(parent, wxID_ANY, "View Recipe", wxDefaultPosition, wxSize(600, 600))
+    : wxDialog(parent, wxID_ANY, "View Recipe", wxDefaultPosition, wxSize(700, 500))
 {
-    BuildLayout(recipe);
-}
+    // Pastel colors
+    wxColour bg("#F7F3FF");      // soft lavender-cream
+    wxColour panelBg("#FFFFFF"); // white panels
+    wxColour header("#C8B6FF");  // pastel purple
+    wxColour text("#4A4A4A");    // soft dark gray
 
-// Build the dialog layout based on the recipe details 
-void ViewRecipeDialog::BuildLayout(const Recipe& recipe)
-{
+    SetBackgroundColour(bg);
+
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    // Title
-    wxStaticText* title = new wxStaticText(this, wxID_ANY,
-        recipe.getRecipeName(), wxDefaultPosition, wxDefaultSize,
-        wxALIGN_CENTER);
-    title->SetFont(wxFont(18, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    // -------------------------
+    // HEADER: Name + Category
+    // -------------------------
+    wxPanel* headerPanel = new wxPanel(this);
+    headerPanel->SetBackgroundColour(header);
 
-    mainSizer->Add(title, 0, wxALIGN_CENTER | wxALL, 10);
+    wxBoxSizer* headerSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    // Basic info
-    wxString info;
-    info << "Category: " << recipe.getRecipeCategory() << "\n";
-    info << "Servings: " << recipe.getServings() << "\n";
-    info << "Cook Time: " << recipe.getCookTime() << " minutes\n";
+    wxStaticText* nameText = new wxStaticText(headerPanel, wxID_ANY, recipe.getRecipeName());
+    nameText->SetFont(wxFontInfo(18).Bold());
+    nameText->SetForegroundColour(*wxWHITE);
 
-    mainSizer->Add(new wxStaticText(this, wxID_ANY, info), 0, wxLEFT | wxRIGHT | wxBOTTOM, 10);
+    wxStaticText* categoryText = new wxStaticText(
+        headerPanel, wxID_ANY, "  [" + recipe.getRecipeCategory() + "]"
+    );
+    categoryText->SetFont(wxFontInfo(14).Bold());
+    categoryText->SetForegroundColour(*wxWHITE);
 
-    // Ingredients
-    mainSizer->Add(new wxStaticText(this, wxID_ANY, "Ingredients:"), 0, wxLEFT | wxTOP, 10);
+    headerSizer->Add(nameText, 0, wxALL | wxALIGN_CENTER_VERTICAL, 10);
+    headerSizer->Add(categoryText, 0, wxALL | wxALIGN_CENTER_VERTICAL, 10);
 
-    wxListBox* ingList = new wxListBox(this, wxID_ANY);
-    for (const auto& ing : recipe.getIngredients())
+    headerPanel->SetSizer(headerSizer);
+    mainSizer->Add(headerPanel, 0, wxEXPAND);
+
+    // -------------------------
+    // MAIN CONTENT AREA
+    // Instructions (left)
+    // Ingredients (right)
+    // -------------------------
+    wxBoxSizer* contentSizer = new wxBoxSizer(wxHORIZONTAL);
+
+    // LEFT: Instructions
+    wxScrolledWindow* instrPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
+    instrPanel->SetScrollRate(5, 5);
+    instrPanel->SetBackgroundColour(panelBg);
+
+    wxBoxSizer* instrSizer = new wxBoxSizer(wxVERTICAL);
+
+    wxStaticText* instrHeader = new wxStaticText(instrPanel, wxID_ANY, "Instructions");
+    instrHeader->SetFont(wxFontInfo(14).Bold());
+    instrHeader->SetForegroundColour(text);
+    instrSizer->Add(instrHeader, 0, wxALL, 10);
+
+    const auto& instructions = recipe.getInstructions().getSteps();
+    for (size_t i = 0; i < instructions.size(); ++i)
     {
-        wxString line;
-        line << ing.getAmountValue() << " " << ing.getUnit() << " " << ing.getName();
-        ingList->Append(line);
+        wxString step = wxString::Format("%zu. %s", i + 1, instructions[i]);
+        wxStaticText* stepText = new wxStaticText(instrPanel, wxID_ANY, step);
+        stepText->SetForegroundColour(text);
+        instrSizer->Add(stepText, 0, wxLEFT | wxRIGHT | wxBOTTOM, 8);
     }
-    mainSizer->Add(ingList, 0, wxEXPAND | wxALL, 10);
 
-    // Instructions
-    mainSizer->Add(new wxStaticText(this, wxID_ANY, "Instructions:"), 0, wxLEFT | wxTOP, 10);
+    instrPanel->SetSizer(instrSizer);
+    contentSizer->Add(instrPanel, 1, wxEXPAND | wxALL, 10);
 
-    wxListBox* stepList = new wxListBox(this, wxID_ANY);
-    int stepNum = 1;
-    for (const auto& step : recipe.getInstructions().getSteps())
+    // RIGHT: Ingredients
+    wxScrolledWindow* ingPanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
+    ingPanel->SetScrollRate(5, 5);
+    ingPanel->SetBackgroundColour(panelBg);
+
+    wxBoxSizer* ingSizer = new wxBoxSizer(wxVERTICAL);
+
+    wxStaticText* ingHeader = new wxStaticText(ingPanel, wxID_ANY, "Ingredients");
+    ingHeader->SetFont(wxFontInfo(14).Bold());
+    ingHeader->SetForegroundColour(text);
+    ingSizer->Add(ingHeader, 0, wxALL, 10);
+
+    const auto& ingredients = recipe.getIngredients();
+    for (const auto& ing : ingredients)
     {
-        wxString line;
-        line << stepNum++ << ". " << step;
-        stepList->Append(line);
-    }
-    mainSizer->Add(stepList, 1, wxEXPAND | wxALL, 10);
+        wxString bullet = wxString::Format(
+            "• %.2f %s %s",
+            ing->getAmountValue(),
+            ing->getUnit(),
+            ing->getName()
+        );
 
-    // Close button
-    mainSizer->Add(new wxButton(this, wxID_OK, "Close"), 0, wxALIGN_CENTER | wxALL, 10);
+        wxStaticText* ingText = new wxStaticText(ingPanel, wxID_ANY, bullet);
+        ingText->SetForegroundColour(text);
+        ingSizer->Add(ingText, 0, wxLEFT | wxRIGHT | wxBOTTOM, 8);
+    }
+
+    ingPanel->SetSizer(ingSizer);
+    contentSizer->Add(ingPanel, 1, wxEXPAND | wxALL, 10);
+
+    mainSizer->Add(contentSizer, 1, wxEXPAND);
+
+    // -------------------------
+    // CLOSE BUTTON
+    // -------------------------
+    wxButton* closeBtn = new wxButton(this, wxID_OK, "Close");
+    mainSizer->Add(closeBtn, 0, wxALIGN_CENTER | wxALL, 10);
 
     SetSizer(mainSizer);
 }
