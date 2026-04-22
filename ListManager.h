@@ -15,6 +15,9 @@ public:
 
     List* getList(const std::string& name);
 
+    // Add getter for dialogs
+    const std::vector<List>& getLists() const { return m_lists; }
+
     //Display List
     void displayAllLists() const;
 
