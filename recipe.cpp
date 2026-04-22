@@ -1,11 +1,9 @@
-#include <format>
 #include <algorithm>
 #include <cctype>
 #include <stdexcept>
-#include "recipe.h"
-
-// ************ RECIPE ************
-// code by Camila & Grace
+#include <sstream>
+#include <ostream>
+#include "Recipe.h"
 
 // Trim helper
 static std::string trim(const std::string& s) {
@@ -18,14 +16,12 @@ static std::string trim(const std::string& s) {
     while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1]))) {
         --end;
     }
-
     return s.substr(start, end - start);
 }
 
-// Validate name/categorys
+// Validate name/category
 static void validateStringField(const std::string& field, const std::string& fieldName) {
     std::string trimmed = trim(field);
-
     if (trimmed.empty()) {
         throw std::invalid_argument(fieldName + " cannot be empty.");
     }
@@ -57,10 +53,10 @@ static void validateStringField(const std::string& field, const std::string& fie
 
 // Constructor
 Recipe::Recipe(std::string name, std::string category)
-    : m_cookTimeMinutes(0), m_servings(1)   // safe defaults
+    : m_cookTimeMinutes(0), m_servings(1)
 {
-    setRecipeName(name);
-    setRecipeCategory(category);
+    setRecipeName(std::move(name));
+    setRecipeCategory(std::move(category));
 }
 
 // Setters with validation
@@ -82,7 +78,7 @@ void Recipe::setCookTime(int minutes) {
     m_cookTimeMinutes = minutes;
 }
 
-// Serving Sizes
+// Serving sizes
 void Recipe::setServings(int servings) {
     if (servings <= 0) {
         throw std::invalid_argument("Servings must be greater than zero.");
@@ -94,7 +90,7 @@ int Recipe::getServings() const {
     return m_servings;
 }
 
-// Serving Size Scaling
+// Serving size scaling
 void Recipe::scaleServings(int newServings) {
     if (newServings <= 0) {
         throw std::invalid_argument("New serving size must be greater than zero.");
@@ -104,15 +100,14 @@ void Recipe::scaleServings(int newServings) {
 
     // Scale ingredients
     for (auto& ingredient : m_ingredients) {
-        ingredient.scaleAmount(ratio);
+        ingredient->scaleAmount(ratio);
     }
-
     m_servings = newServings;
 }
 
 // Ingredient management
-void Recipe::addIngredient(const Ingredient& ing) {
-    m_ingredients.push_back(ing);
+void Recipe::addIngredient(std::unique_ptr<IngredientBase> ing) {
+    m_ingredients.push_back(std::move(ing));
 }
 
 void Recipe::clearIngredients() {
@@ -130,7 +125,6 @@ void Recipe::addInstruction(const std::string& step) {
 void Recipe::clearInstructions() {
     m_instructions.clear();
 }
-
 
 // Validation for entire recipe
 void Recipe::validate() const {
@@ -159,25 +153,23 @@ const std::string& Recipe::getRecipeName() const { return m_name; }
 const std::string& Recipe::getRecipeCategory() const { return m_category; }
 
 // Display recipe
-std::string Recipe::displayRecipe() const{
-    std::string output = std::format(
-        "\"{}\"\nCategory: {}\nServings: {}\nCook Time: {} minutes\n\nIngredients:\n",
-        m_name, m_category, m_servings, m_cookTimeMinutes
-    );
+std::string Recipe::displayRecipe() const {
+    std::ostringstream out;
+    out << m_name << "\n";
+    out << "Category: " << m_category << "\n";
+    out << "Servings: " << m_servings << "\n";
+    out << "Cook Time: " << m_cookTimeMinutes << " minutes\n\n";
+    out << "Ingredients:\n";
 
     for (const auto& ing : m_ingredients) {
-        output += std::format("  - {} {} {}\n",
-            ing.getAmountValue(),
-            ing.getUnit(),
-            ing.getName()
-        );
+        out << " - " << ing->getAmountValue() << " "
+            << ing->getUnit() << " " << ing->getName() << "\n";
     }
 
-    output += "\nInstructions:\n";
+    out << "\nInstructions:\n";
     int stepNum = 1;
     for (const auto& step : m_instructions.getSteps()) {
-        output += std::format("  {}. {}\n", stepNum++, step);
+        out << " " << stepNum++ << ". " << step << "\n";
     }
-
-    return output;
+    return out.str();
 }
