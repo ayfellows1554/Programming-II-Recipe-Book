@@ -1,3 +1,5 @@
+//NOTE: this file is not needed for wxWidgets to run. There is a MainFrame.cpp where the program runs from //
+
 #include <iostream>
 #include <limits>
 #include "recipe.h"
