@@ -14,11 +14,34 @@ A recipe book that allows users to browse and organize their favorite recipes.
 ## How to Run
 
 ### Requirements
--Using Windows 10 or later
--Visual Studio 2022 or later
--Download wxWidgets 3.2x (Built for x64)
+Main thing: Visual Studio 2022
+
+Note about the different systems:
+-Each one will need its own wxWidgets build
+
+Windows: You will need MSVC + wxWidgets built with Visual Studio. You can use the steps below, and the program will run smoothly.
+
+macOS: Xcode + wxWidgets built with clang
+1. Install Xcode + Command Line Tools (You will need Apple's compiler toolchain that gives you Clang)
+2. Download wxWidgets 3.2x [You can use the same version as for Windows]
+3. Configure wxWidgets for macOS [macOS uses the Cocoa backend]
+4. Build wxWidgets
+   -after that, you will have (.a) static libraries inside
+5. Build the project either using CMake or Xcode
+6. Run the app
+
+Linux: GCC/Clang + wxWidgets installed via package manager or built from source
+1. Install Build Tools [Ubuntu or Debian\\ Fedora \\ Arch]
+2. Install wxWidgets using your particular distro
+3. Build the project using CMake (recommended), or you can compile manually
+4. Run it
+Note for Linux:
+-Case sensitivity (so MainFrame.h vs mainframe.h)
+-File paths (use / not \)
+-Missing libraries (for image formats)
 
 ### Steps
+THIS IS FOR A WINDOWS SETUP. REFER TO THE REQUIREMENTS FOR THE DIFFERENT SYSTEMS
 Part 1:
 1. Install wxWidgets 3.2x
 2.  Extract it to a folder
@@ -63,6 +86,8 @@ Part 4: Open the Solution
 4. Run the App
 
 ### Notes
+-The above steps are meant for a Windows system. If you're using a different system, then refer to the requirement section above
+
 -wxWidgets must be built in the same configuration as the project, which is x64
 (x64 Debug and x64 Release)
 
@@ -76,11 +101,15 @@ Part 4: Open the Solution
 ## Features
 -Add, Delete, and Modify recipes
 
--Change the number of servings (a manual button)
-
 -Search for existing recipes
 
 -Make your own collections of recipes
+
+-Add, Delete, and Modify ingredients
+
+-Search by category
+
+-Search by ingredient
 
 
 ---
@@ -140,7 +169,7 @@ Our project uses composition extensively to build larger, tightly‑bound object
 ---
 ## AI and External Resources Disclosure
 
-GitHub Copilot, as well as Microsoft Copilot, did help with the error handling at the end by showing where mixed naming was occurring, giving solutions on why there was a persistent error (for example: c2672) and showing where there was a missing header
+GitHub Copilot, as well as Microsoft Copilot, did help with the error handling at the end by showing where mixed naming was occurring and giving solutions on why there was a persistent error (for example: c2672).
 
 
 ### Collaboration Policy Statement
