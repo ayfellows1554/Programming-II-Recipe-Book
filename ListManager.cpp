@@ -72,4 +72,3 @@ void ListManager::displayAllLists() const {
         std::cout << " - " << list.getListName() << "\n";
     }
 }
-   
