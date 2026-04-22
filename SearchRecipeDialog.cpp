@@ -1,45 +1,133 @@
 #include "SearchRecipeDialog.h"
+#include "ViewRecipeDialog.h"
+#include "Theme.h"
+
 
 enum
 {
-    ID_SearchButton = 2001
+    ID_SearchButton = wxID_HIGHEST + 200,
+    ID_ViewButton
 };
 
-// Constructor for the search dialog
 SearchRecipeDialog::SearchRecipeDialog(wxWindow* parent, RecipeBook& book)
-    : wxDialog(parent, wxID_ANY, "Search Recipes", wxDefaultPosition, wxSize(500, 500)),
+    : wxDialog(parent, wxID_ANY, "Search Recipes", wxDefaultPosition, wxSize(550, 550)),
     m_book(book)
 {
+    PastelTheme::ApplyTheme(this);
+
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    mainSizer->Add(new wxStaticText(this, wxID_ANY, "Enter recipe name:"), 0, wxALL, 5);
+    // -------------------------
+    // Search Mode + Search Bar
+    // -------------------------
+    wxBoxSizer* topSizer = new wxBoxSizer(wxHORIZONTAL);
+
+    searchMode = new wxChoice(this, wxID_ANY);
+    searchMode->Append("Name");
+    searchMode->Append("Ingredient");
+    searchMode->Append("Category");
+    searchMode->SetSelection(0);
+
     txtSearch = new wxTextCtrl(this, wxID_ANY);
-    mainSizer->Add(txtSearch, 0, wxEXPAND | wxALL, 5);
 
     wxButton* btnSearch = new wxButton(this, ID_SearchButton, "Search");
-    mainSizer->Add(btnSearch, 0, wxALIGN_CENTER | wxALL, 5);
+    PastelTheme::StyleButton(btnSearch);
 
-    txtResult = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, wxDefaultSize,
-        wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH2);
-    mainSizer->Add(txtResult, 1, wxEXPAND | wxALL, 5);
+    topSizer->Add(searchMode, 0, wxALL, 8);
+    topSizer->Add(txtSearch, 1, wxALL | wxEXPAND, 8);
+    topSizer->Add(btnSearch, 0, wxALL, 8);
 
+    mainSizer->Add(topSizer, 0, wxEXPAND);
+
+    // -------------------------
+    // Results List
+    // -------------------------
+    resultsList = new wxListBox(this, wxID_ANY);
+    mainSizer->Add(resultsList, 1, wxALL | wxEXPAND, 10);
+
+    // -------------------------
+    // View Button
+    // -------------------------
+    wxButton* btnView = new wxButton(this, ID_ViewButton, "View Recipe");
+    PastelTheme::StyleButton(btnView);
+
+    mainSizer->Add(btnView, 0, wxALIGN_CENTER | wxALL, 10);
+
+    // Bind events
     Bind(wxEVT_BUTTON, &SearchRecipeDialog::OnSearch, this, ID_SearchButton);
+    Bind(wxEVT_BUTTON, &SearchRecipeDialog::OnView, this, ID_ViewButton);
 
     SetSizer(mainSizer);
 }
 
-// Event handler for searching a recipe
-void SearchRecipeDialog::OnSearch(wxCommandEvent& evt)
+void SearchRecipeDialog::OnSearch(wxCommandEvent&)
 {
-    std::string name = txtSearch->GetValue().ToStdString();
-    Recipe* r = m_book.findRecipe(name);
+    resultsList->Clear();
 
-	//Error handling if recipe is not found
-    if (!r)
-    {
-        txtResult->SetValue("Recipe not found.");
+    std::string query = txtSearch->GetValue().ToStdString();
+    if (query.empty())
         return;
+
+    int mode = searchMode->GetSelection();
+
+    // -------------------------
+    // SEARCH BY NAME
+    // -------------------------
+    if (mode == 0)
+    {
+        for (auto& recipe : m_book.getAllRecipes())
+        {
+            if (recipe.getRecipeName().find(query) != std::string::npos)
+                resultsList->Append(recipe.getRecipeName());
+        }
     }
 
-    txtResult->SetValue(r->displayRecipe());
+    // -------------------------
+    // SEARCH BY INGREDIENT
+    // -------------------------
+    else if (mode == 1)
+    {
+        for (auto& recipe : m_book.getAllRecipes())
+        {
+            for (auto& ing : recipe.getIngredients())
+            {
+                if (ing->getName().find(query) != std::string::npos)
+                {
+                    resultsList->Append(recipe.getRecipeName());
+                    break;
+                }
+            }
+        }
+    }
+
+    // -------------------------
+    // SEARCH BY CATEGORY
+    // -------------------------
+    else if (mode == 2)
+    {
+        for (auto& recipe : m_book.getAllRecipes())
+        {
+            if (recipe.getRecipeCategory().find(query) != std::string::npos)
+                resultsList->Append(recipe.getRecipeName());
+        }
+    }
+
+    if (resultsList->IsEmpty())
+        resultsList->Append("No recipes found.");
+}
+
+void SearchRecipeDialog::OnView(wxCommandEvent&)
+{
+    int sel = resultsList->GetSelection();
+    if (sel == wxNOT_FOUND)
+        return;
+
+    wxString name = resultsList->GetString(sel);
+
+    Recipe* r = m_book.findRecipe(name.ToStdString());
+    if (!r)
+        return;
+
+    ViewRecipeDialog dlg(this, *r);
+    dlg.ShowModal();
 }
