@@ -2,7 +2,7 @@
 #include "Ingredient.h"
 #include <iostream>
 
-//One of the  derived classes for inheritance
+//One of the  derived classes for IngredientBase
 class ProduceIngredient : public Ingredient {
 public:
     using Ingredient::Ingredient; // inherit constructor
