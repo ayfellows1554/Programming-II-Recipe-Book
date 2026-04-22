@@ -35,13 +35,18 @@ Linux: GCC/Clang + wxWidgets installed via package manager or built from source
 2. Install wxWidgets using your particular distro
 3. Build the project using CMake (recommended), or you can compile manually
 4. Run it
+
 Note for Linux:
+
 -Case sensitivity (so MainFrame.h vs mainframe.h)
+
 -File paths (use / not \)
+
 -Missing libraries (for image formats)
 
 ### Steps
 THIS IS FOR A WINDOWS SETUP. REFER TO THE REQUIREMENTS FOR THE DIFFERENT SYSTEMS
+
 Part 1:
 1. Install wxWidgets 3.2x
 2.  Extract it to a folder
@@ -56,7 +61,7 @@ Part 2: Build wxWidgets (required once)
 
 Part 3: Download the project
 If using Git:
-git clone https://github.com/<Programming-II-Recipe-Book>.git
+git clone https://github.com/<the_repo_name>.git
 
  Or download the ZIP from GitHub and extract it
 
@@ -94,6 +99,7 @@ Part 4: Open the Solution
 -If you get a linker error, double-check the library directories, the build type, and that wxWidgets was compiled successfully
 
 -If Visual Studio behaves weirdly, then delete .vs/ x64/ and ipch/ and rebuild the solution
+
 -The app uses a wxWidgetsApp entry point (wxImplement_APP), so no main() function is needed
 
 ---
