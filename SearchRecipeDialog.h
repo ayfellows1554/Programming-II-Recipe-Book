@@ -1,5 +1,7 @@
 #pragma once
 #include <wx/wx.h>
+#include <wx/listbox.h>
+#include <wx/choice.h>
 #include "RecipeBook.h"
 
 class SearchRecipeDialog : public wxDialog
@@ -11,7 +13,9 @@ private:
     RecipeBook& m_book;
 
     wxTextCtrl* txtSearch;
-    wxTextCtrl* txtResult;
+    wxListBox* resultsList;
+    wxChoice* searchMode; // name, ingredient, category
 
     void OnSearch(wxCommandEvent& evt);
+    void OnView(wxCommandEvent& evt);
 };
