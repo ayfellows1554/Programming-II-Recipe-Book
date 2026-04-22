@@ -1,26 +1,22 @@
-
 #pragma once
 #include <string>
+#include "IngredientBase.h"
+#include<iostream>
+#include<memory>
 
-class Ingredient {
+class Ingredient : public IngredientBase {
 public:
-    // amountValue = numeric amount (e.g., 1.5)
-    // unit = "cups", "tbsp", etc.
-    // name = "flour", "sugar"
     Ingredient(double amountValue, const std::string& unit, const std::string& name);
 
-    void scaleAmount(double ratio);
-    void displayIngredient() const;
+    std::string getName() const override { return m_name; }
+    std::string getUnit() const override { return m_unit; }
+    double getAmountValue() const override { return m_amountValue; }
 
-    //Return the numeric amount
-    double getAmountValue() const { return m_amountValue; }
-    //Returns the unit
-    const std::string& getUnit() const { return m_unit; }
-    //Returns the name
-    const std::string& getName() const { return m_name; }
+    void scaleAmount(double ratio) override;
+    void displayIngredient() const override;
 
 private:
-    double m_amountValue;     // numeric amount
-    std::string m_unit;       // "cups", "tbsp", etc.
-    std::string m_name;       // "flour", "sugar"
+    double m_amountValue;
+    std::string m_unit;
+    std::string m_name;
 };
