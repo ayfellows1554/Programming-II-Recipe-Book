@@ -1,16 +1,26 @@
 #pragma once
+#pragma once
 #include <string>
 #include <vector>
-#include "ingredient.h"
-#include "instructions.h"
+#include <memory>
+#include "IngredientBase.h"
+#include "Instructions.h"
 
-// ************ RECIPE ************
-// code by Camila & Grace
-
+// Represents a complete recipe, including name, category, ingredients, instructions, cook time, and servings
 class Recipe {
 public:
-    // Constructor
+
+    // Constructors
     Recipe(std::string name, std::string category);
+    Recipe() = default;
+
+    //Disable copying
+    Recipe(const Recipe&) = delete;
+    Recipe& operator=(const Recipe&) = delete;
+
+    //Enable moving
+    Recipe(Recipe&&) noexcept = default;
+    Recipe& operator=(Recipe&&) noexcept = default;
 
     // Name
     void setRecipeName(std::string name);
@@ -31,15 +41,19 @@ public:
     // Scale servings
     void scaleServings(int newServings);
 
-    // Ingredient management
-    void addIngredient(const Ingredient& ing);
+    // Ingredient management (polymorphic)
+    void addIngredient(std::unique_ptr<IngredientBase> ing);
     void clearIngredients();
-    const std::vector<Ingredient>& getIngredients() const { return m_ingredients; }
+    
+    const std::vector<std::unique_ptr<IngredientBase>>& getIngredients() const { return m_ingredients; }
+    const Instructions& getInstructions() const { return m_instructions; }
+    std::vector<std::unique_ptr<IngredientBase>>& getIngredients() { return m_ingredients; }
+    Instructions& getInstructions() { return m_instructions; }
 
     // Instruction management
     void addInstruction(const std::string& step);
     void clearInstructions();
-    const Instructions& getInstructions() const { return m_instructions; }
+
 
     // Validate entire recipe
     void validate() const;
@@ -53,7 +67,7 @@ private:
     std::string m_category;
 
     // Ingredients + instructions
-    std::vector<Ingredient> m_ingredients;
+    std::vector<std::unique_ptr<IngredientBase>> m_ingredients;
     Instructions m_instructions;
 
     // Serving size (default 1)
