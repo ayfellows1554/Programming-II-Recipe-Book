@@ -1,5 +1,6 @@
 #pragma once
 #include <wx/wx.h>
+#include <wx/listbox.h>
 #include "RecipeBook.h"
 #include "ListManager.h"
 
@@ -21,5 +22,5 @@ private:
     void OnViewList(wxCommandEvent& evt);
     void OnAddRecipe(wxCommandEvent& evt);
     void OnRemoveRecipe(wxCommandEvent& evt);
+	void OnModifyRecipe(wxCommandEvent& evt);
 };
-
