@@ -18,7 +18,7 @@ public:
     void editList(int index, const std::string& newRecipe);
 
     // Delete a recipe by index
-    void deleteList(int index);   
+    void deleteList(int index);
 
     // Remove all recipes
     void clear();
@@ -36,6 +36,6 @@ public:
     const std::string& getListName() const { return name; }
 
     //expose size() to help menus
-	//loop through recipes.size() instead of calling empty() to avoid double lookup
-	int size() const { return static_cast<int>(recipes.size()); }
+    //loop through recipes.size() instead of calling empty() to avoid double lookup
+    int size() const { return static_cast<int>(recipes.size()); }
 };
