@@ -46,8 +46,10 @@ Part 4: Open the Solution
     $(WXWIN)\include
     $(WXWIN)\include\msvc
 
+
  2b. Project -> Properties -> Linker -> General -> Additional Library Directories 
     $(WXWIN)\lib\vc_x64_lib
+
 
 2c. Project -> Properties -> Linker -> Input -> Additional Dependecies
     wxmsw32u_core.lib
@@ -63,8 +65,10 @@ Part 4: Open the Solution
 ### Notes
 -wxWidgets must be built in the same configuration as the project, which is x64
 (x64 Debug and x64 Release)
+
 -If you get a linker error, double-check the library directories, the build type, and that wxWidgets was compiled successfully
--If Visual Studio behaves weird, then delete .vs/ x64/ and ipch/ and rebuild the solution
+
+-If Visual Studio behaves weirdly, then delete .vs/ x64/ and ipch/ and rebuild the solution
 -The app uses a wxWidgetsApp entry point (wxImplement_APP), so no main() function is needed
 
 ---
