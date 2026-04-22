@@ -1,92 +1,81 @@
 #include "MainFrame.h"
 #include "CreateRecipeDialog.h"
-#include "ListManagerDialog.h"
 #include "SearchRecipeDialog.h"
-#include "Theme.h"   // Theme header for styling
+#include "ListManagerDialog.h"
+#include "Theme.h"
+#include"ModifyRecipeDialog.h"
+#include"IngredientEditorDialog.h"
+
+//This is what will run the app, not driver.cpp
+
 
 enum
 {
-    ID_CreateRecipe = 1,
+    ID_CreateRecipe = wxID_HIGHEST + 1,
     ID_SearchRecipe,
-    ID_ManageLists
+    ID_ManageLists,
 };
 
-// Event table for MainFrame
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
-    EVT_MENU(ID_CreateRecipe, MainFrame::OnCreateRecipe)
-    EVT_MENU(ID_SearchRecipe, MainFrame::OnSearchRecipe)
-    EVT_MENU(ID_ManageLists, MainFrame::OnManageLists)
-    EVT_MENU(wxID_EXIT, MainFrame::OnExit)
+EVT_BUTTON(ID_CreateRecipe, MainFrame::OnCreateRecipe)
+EVT_BUTTON(ID_SearchRecipe, MainFrame::OnSearchRecipe)
+EVT_BUTTON(ID_ManageLists, MainFrame::OnManageLists)
 wxEND_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title)
     : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(900, 600))
 {
-    // Create menu
-    wxMenuBar* menuBar = new wxMenuBar();
-    wxMenu* menuFile = new wxMenu();
-    menuFile->Append(ID_CreateRecipe, "&Create Recipe");
-    menuFile->Append(ID_SearchRecipe, "&Search Recipe");
-    menuFile->Append(ID_ManageLists, "&Manage Lists");
-    menuFile->AppendSeparator();
-    menuFile->Append(wxID_EXIT, "E&xit");
-    menuBar->Append(menuFile, "&File");
-    SetMenuBar(menuBar);
+    // Apply pastel theme to the frame
+    PastelTheme::ApplyTheme(this);
 
-    // Main content panel
-    contentPanel = new wxPanel(this);
-    PastelTheme::StylePanel(contentPanel);
+    wxPanel* panel = new wxPanel(this);
+    PastelTheme::StylePanel(panel);
 
-    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
-	// Header
-    wxStaticText* header = new wxStaticText(contentPanel, wxID_ANY, "Recipe Book");
+    // -------------------------
+    // HEADER TITLE
+    // -------------------------
+    wxStaticText* header = new wxStaticText(panel, wxID_ANY, "Recipe Manager");
     PastelTheme::StyleHeader(header);
-    sizer->Add(header, 0, wxALIGN_CENTER | wxALL, 10);
+    mainSizer->Add(header, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 15);
 
-	// Buttons
-    wxButton* btnCreate = new wxButton(contentPanel, ID_CreateRecipe, "Create Recipe");
-    PastelTheme::StyleButton(btnCreate);
-    sizer->Add(btnCreate, 0, wxALIGN_CENTER | wxALL, 5);
+    // -------------------------
+    // BUTTON BAR
+    // -------------------------
+    wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-	// Search button
-    wxButton* btnSearch = new wxButton(contentPanel, ID_SearchRecipe, "Search Recipes");
-    PastelTheme::StyleButton(btnSearch);
-    sizer->Add(btnSearch, 0, wxALIGN_CENTER | wxALL, 5);
+    wxButton* createBtn = new wxButton(panel, ID_CreateRecipe, "Create Recipe");
+    wxButton* searchBtn = new wxButton(panel, ID_SearchRecipe, "Search Recipes");
+    wxButton* listBtn = new wxButton(panel, ID_ManageLists, "Manage Lists");
 
-	// Manage Lists button
-    wxButton* btnLists = new wxButton(contentPanel, ID_ManageLists, "Manage Lists");
-    PastelTheme::StyleButton(btnLists);
-    sizer->Add(btnLists, 0, wxALIGN_CENTER | wxALL, 5);
+    PastelTheme::StyleButton(createBtn);
+    PastelTheme::StyleButton(searchBtn);
+    PastelTheme::StyleButton(listBtn);
 
-    contentPanel->SetSizer(sizer);
+    buttonSizer->Add(createBtn, 0, wxALL, 10);
+    buttonSizer->Add(searchBtn, 0, wxALL, 10);
+    buttonSizer->Add(listBtn, 0, wxALL, 10);
 
-    Centre();
+    mainSizer->Add(buttonSizer, 0, wxALIGN_CENTER);
+
+    panel->SetSizer(mainSizer);
 }
 
-//Event handler for creating a new recipe
-void MainFrame::OnCreateRecipe(wxCommandEvent& evt)
+void MainFrame::OnCreateRecipe(wxCommandEvent&)
 {
     CreateRecipeDialog dlg(this, m_recipeBook);
     dlg.ShowModal();
 }
 
-// Event handler for searching recipes
-void MainFrame::OnSearchRecipe(wxCommandEvent & evt)
+void MainFrame::OnSearchRecipe(wxCommandEvent&)
 {
     SearchRecipeDialog dlg(this, m_recipeBook);
     dlg.ShowModal();
 }
 
-//Event handler for managing lists
-void MainFrame::OnManageLists(wxCommandEvent& evt)
+void MainFrame::OnManageLists(wxCommandEvent&)
 {
     ListManagerDialog dlg(this, m_recipeBook, m_listManager);
     dlg.ShowModal();
-}
-
-// Event handler for exiting the application
-void MainFrame::OnExit(wxCommandEvent & evt)
-{
-    Close(true);
 }
