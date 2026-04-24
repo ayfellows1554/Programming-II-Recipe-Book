@@ -100,20 +100,18 @@ void SearchRecipeDialog::OnSearch(wxCommandEvent&)
         }
     }
 
-    // -------------------------
-    // SEARCH BY CATEGORY
-    // -------------------------
-    else if (mode == 2)
-    {
-        for (auto& recipe : m_book.getAllRecipes())
-        {
-            if (recipe.getRecipeCategory().find(query) != std::string::npos)
-                resultsList->Append(recipe.getRecipeName());
+// search by category (using template)
+else if (mode == 2)
+{
+    auto results = m_book.findRecipesWhere(
+        [&](const Recipe& r) {
+            return r.getRecipeCategory().find(query) != std::string::npos;
         }
-    }
-
-    if (resultsList->IsEmpty())
-        resultsList->Append("No recipes found.");
+    );
+    for (auto* r : results)
+        resultsList->Append(r->getRecipeName());
+        
+        }
 }
 
 void SearchRecipeDialog::OnView(wxCommandEvent&)
