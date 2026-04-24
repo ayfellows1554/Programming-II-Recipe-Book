@@ -19,7 +19,7 @@ public:
 
     // Template
     template <typename Predicate>
-    std::vector<Recipe*> findRecipesWhere(Predicate pred) {
+    std::vector<Recipe*> findRecipesWhere(const Predicate pred) {
         std::vector<Recipe*> results;
         for (auto& r : m_recipes)
             if (pred(r)) results.push_back(&r);
