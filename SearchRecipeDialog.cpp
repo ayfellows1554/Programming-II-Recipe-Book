@@ -65,53 +65,61 @@ void SearchRecipeDialog::OnSearch(wxCommandEvent&)
     resultsList->Clear();
 
     std::string query = txtSearch->GetValue().ToStdString();
+
+    // Trim
+    auto trim = [&](std::string s) {
+        size_t start = s.find_first_not_of(" \t\n\r");
+        size_t end   = s.find_last_not_of(" \t\n\r");
+        return (start == std::string::npos) ? "" : s.substr(start, end - start + 1);
+    };
+
+    query = trim(query);
     if (query.empty())
         return;
+
+    // Lowercase query
+    std::transform(query.begin(), query.end(), query.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
 
     int mode = searchMode->GetSelection();
 
     // -------------------------
-    // SEARCH BY NAME
+    // GENERIC PREDICATE SEARCH
     // -------------------------
-    if (mode == 0)
-    {
-        for (auto& recipe : m_book.getAllRecipes())
-        {
-            if (recipe.getRecipeName().find(query) != std::string::npos)
-                resultsList->Append(recipe.getRecipeName());
-        }
-    }
-
-    // -------------------------
-    // SEARCH BY INGREDIENT
-    // -------------------------
-    else if (mode == 1)
-    {
-        for (auto& recipe : m_book.getAllRecipes())
-        {
-            for (auto& ing : recipe.getIngredients())
-            {
-                if (ing->getName().find(query) != std::string::npos)
-                {
-                    resultsList->Append(recipe.getRecipeName());
-                    break;
-                }
-            }
-        }
-    }
-
-// search by category (using template)
-else if (mode == 2)
-{
     auto results = m_book.findRecipesWhere(
-        [&](const Recipe& r) {
-            return r.getRecipeCategory().find(query) != std::string::npos;
+        [&](const Recipe& r)
+        {
+            std::string field;
+
+            if (mode == 0)          // Name
+                field = r.getRecipeName();
+            else if (mode == 1)     // Ingredient
+            {
+                for (auto& ing : r.getIngredients())
+                {
+                    std::string ingName = ing->getName();
+                    std::transform(ingName.begin(), ingName.end(), ingName.begin(),
+                                   [](unsigned char c){ return std::tolower(c); });
+
+                    if (ingName.find(query) != std::string::npos)
+                        return true;
+                }
+                return false;
+            }
+            else if (mode == 2)     // Category
+                field = r.getRecipeCategory();
+
+            // Lowercase field
+            std::transform(field.begin(), field.end(), field.begin(),
+                           [](unsigned char c){ return std::tolower(c); });
+
+            return field.find(query) != std::string::npos;
         }
     );
+
+    // Populate results
     for (auto* r : results)
         resultsList->Append(r->getRecipeName());
-        
-        }
 }
 
 void SearchRecipeDialog::OnView(wxCommandEvent&)
