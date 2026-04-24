@@ -52,8 +52,8 @@ void createRecipe(RecipeBook& book) {
 
         cout << "Unit: ";
         std::getline(cin, unit);
-
-        r.addIngredient(Ingredient(amount, unit, ingName));
+        
+        r.addIngredient(std::make_unique<Ingredient>(amount, unit, ingName));
     }
 
     // INSTRUCTIONS
@@ -71,7 +71,7 @@ void createRecipe(RecipeBook& book) {
     // Validate and add
     try {
         r.validate();
-        book.addRecipe(r);
+        book.addRecipe(std::move(r));
         cout << "Recipe added successfully!\n";
     }
     catch (const std::exception& e) {
