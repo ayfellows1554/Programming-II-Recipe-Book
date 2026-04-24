@@ -14,3 +14,4 @@ void Ingredient::scaleAmount(double ratio)
 void Ingredient::displayIngredient() const
 {
     std::cout << m_amountValue << " " << m_unit << " " << m_name << "\n";
+}
